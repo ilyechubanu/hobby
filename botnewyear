@@ -1,0 +1,148 @@
+import telebot
+from telebot import types
+
+count = 0
+
+bot = telebot.TeleBot('7208769116:AAFPUO_EB3hH--7-3Js5s5vnFEYT8gMGU2g')
+
+@bot.message_handler(commands=['start'])
+def start(message):
+    with open('./start.jpg', 'rb') as file:
+        markup = types.InlineKeyboardMarkup()
+        btn1 = types.InlineKeyboardButton('Готово!', callback_data='start')
+        markup.row(btn1)
+        caption = ('Привет, любимая! Я подготовил для тебя небольшой квест) \n '
+                   'Для начала тебе необходимо открыть самую маленькую коробку\n '
+                   'как будешь готова нажми следующую кнопку!')
+        bot.send_photo(message.chat.id, file, caption=caption, reply_markup=markup)
+
+@bot.callback_query_handler(func=lambda callback: True)
+def callback_start(callback):
+    global count
+    if callback.data == 'start':
+        ready(callback.message.chat.id)
+    elif callback.data == 'open':
+        oppen(callback.message.chat.id)
+    elif callback.data == 'video':
+        bot.send_message(callback.message.chat.id, 'https://t.me/newyearfromspb/2')
+        vid(callback.message.chat.id)
+    elif callback.data == 'pass1':
+        bot.send_message(callback.message.chat.id, 'Введите пароль в формате xx.xx.xxxx')
+        bot.register_next_step_handler(callback.message, check_password, 'pass1')
+    elif callback.data == 'pass2':
+        bot.send_message(callback.message.chat.id, 'Введите пароль в формате xx.xx.xxxx')
+        bot.register_next_step_handler(callback.message, check_password, 'pass2')
+    elif callback.data == 'pass3':
+        bot.send_message(callback.message.chat.id, 'Введите пароль в формате xx.xx.xxxx')
+        bot.register_next_step_handler(callback.message, check_password, 'pass3')
+    elif callback.data == 'pass4':
+        bot.send_message(callback.message.chat.id, 'Введите пароль в формате xx.xx.xxxx')
+        bot.register_next_step_handler(callback.message, check_password, 'pass4')
+    elif callback.data == 'back':
+        vid(callback.message.chat.id)
+    elif callback.data == 'end':
+        if count == 4:
+            end(callback.message.chat.id)
+        else:
+            bot.send_message(callback.message.chat.id, 'Пройди тест до конца!')
+
+def check_password(message, password_type):
+    global count
+    if password_type == 'pass1' and message.text == "30.06.2006":
+
+        pass1(message.chat.id)
+        count += 1
+
+    elif password_type == 'pass2' and message.text == "31.08.2024":
+
+        pass2(message.chat.id)
+        count += 1
+
+    elif password_type == 'pass3' and message.text == "28.11.2006":
+        pass3(message.chat.id)
+        count += 1
+
+    elif password_type == 'pass4' and message.text == "18.10.2024":
+        pass4(message.chat.id)
+        count += 1
+
+    else:
+
+        bot.send_message(message.chat.id, 'Неверный пароль')
+
+def ready(chat_id):
+    with open('./ready.jpg', 'rb') as file1:
+        markup = types.InlineKeyboardMarkup()
+        btn1 = types.InlineKeyboardButton('Открыла!', callback_data='open')
+        markup.row(btn1)
+        caption1 = ('Теперь можешь открыть большую коробку! В ней ты увидишь подарки, '
+                    'на каждом из которых есть небольшая подсказка для прохождения этого квеста \n '
+                    'Если сделаешь все правильно, тебя ждет хорошая награда!')
+        bot.send_photo(chat_id, file1, caption=caption1, reply_markup=markup)
+
+def oppen(chat_id):
+    with open('./open.jpg', 'rb') as file2:
+        markup = types.InlineKeyboardMarkup()
+        btn1 = types.InlineKeyboardButton('Кидай видео!', callback_data='video')
+        markup.row(btn1)
+        caption2 = ('Внимательно посмотри на числа и слова, ведь они что-то означают \n '
+                    'сейчас я тебе вышлю подсказку, с помощью которой ты должна понять, '
+                    'в какой последовательности расположить эти числа \n '
+                    'P.S из этих чисел складывается пароль, который ты должна будешь ввести')
+        bot.send_photo(chat_id, file2, caption=caption2, reply_markup=markup)
+
+
+def vid(chat_id):
+    with open('./posvid.jpg', 'rb') as file3:
+        markup = types.InlineKeyboardMarkup()
+        btn1 = types.InlineKeyboardButton('Пароль 1', callback_data='pass1')
+        btn2 = types.InlineKeyboardButton('Пароль 2', callback_data='pass2')
+        btn3 = types.InlineKeyboardButton('Пароль 3', callback_data='pass3')
+        btn4 = types.InlineKeyboardButton('Пароль 4', callback_data='pass4')
+        markup.row(btn1, btn2)
+        markup.row(btn3, btn4)
+        caption3 = 'Каждый пароль - это какая-то дата \n Вводи пароль в формате: xx.xx.xxxx \n'
+        bot.send_photo(chat_id, file3, caption=caption3, reply_markup=markup)
+
+def pass1(chat_id):
+    with open('./pass1.jpg', 'rb') as file4:
+        markup = types.InlineKeyboardMarkup()
+        btn1 = types.InlineKeyboardButton('Назад!', callback_data='back')
+        markup.row(btn1)
+        caption4 = ('Молодец! Держи свою награду, ты ее заслужила!\n '
+                    'Осталось еще 3, я верю в тебя, ты сможешь!')
+        bot.send_photo(chat_id, file4, caption=caption4, reply_markup=markup)
+
+def pass2(chat_id):
+    with open('./pass2.jpg', 'rb') as file5:
+        markup = types.InlineKeyboardMarkup()
+        btn1 = types.InlineKeyboardButton('Назад!', callback_data='back')
+        markup.row(btn1)
+        caption5 = ('Молодец! Держи свою награду, ты ее заслужила!\n '
+                    'Осталось еще 2, я верю в тебя, ты сможешь!')
+        bot.send_photo(chat_id, file5, caption=caption5, reply_markup=markup)
+
+def pass3(chat_id):
+    with open('./pass3.jpg', 'rb') as file6:
+        markup = types.InlineKeyboardMarkup()
+        btn1 = types.InlineKeyboardButton('Назад!', callback_data='back')
+        markup.row(btn1)
+        caption6 = ('Молодец! Держи свою награду, ты ее заслужила!\n '
+                    'Осталось еще 1, я верю в тебя, ты сможешь!')
+        bot.send_photo(chat_id, file6, caption=caption6, reply_markup=markup)
+
+def pass4(chat_id):
+    with open('./pass4.jpg', 'rb') as file7:
+        markup = types.InlineKeyboardMarkup()
+        btn1 = types.InlineKeyboardButton('Ура! Алиса?', callback_data='end')
+        markup.row(btn1)
+        caption7 = 'А вот и последний твой новогодний подарок, солнышко❤️'
+        bot.send_photo(chat_id, file7, caption=caption7, reply_markup=markup)
+
+def end(chat_id):
+    with open('./end.jpg', 'rb') as file8:
+        caption8 = ('Спасибо, дорогая, за то, что прошла этот мини-квест❤️ \n '
+                    'Я люблю тебя и в новогоднем году желаю нам всегда быть рядом, поддерживать друг друга и любить, с наступающим 2025 годом, пусть этот год станет для тебя поистине незабываемым❤️❤️❤️')
+        bot.send_photo(chat_id, file8, caption=caption8)
+
+bot.polling(none_stop=True)
